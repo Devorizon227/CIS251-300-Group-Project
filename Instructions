@@ -1,2 +1,0 @@
-1) Take the files and import into Godot, should work properly but want to verify first (optional)
-2) cd into the project directory and run 'scons' (will have to install it first so refer to the gdextension docs for that)
