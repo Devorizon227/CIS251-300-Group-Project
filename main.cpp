@@ -17,8 +17,6 @@ int main() {
     InitWindow(screenWidth, screenHeight, "Raylib Top-Down - Enemy Chase");
     SetTargetFPS(60);
     
-    
-    
     // V1 This sets up the player starting position and speed.
     Vector2 playerPos = { 400, 300 };
     float playerSpeed = 250.0f;
@@ -35,6 +33,8 @@ int main() {
     bool gameOver = false;
 
     while (!WindowShouldClose()) {
+        // Update mouse position every frame
+        Vector2 mousePos = GetMousePosition();
         
         //V4 Added pause button mechanic         
         if (IsKeyPressed(KEY_SPACE))
@@ -88,8 +88,8 @@ int main() {
             // V3 Check if the distance between circles is less than the sum of their radii
             if (CheckCollisionCircles(playerPos, playerRadius, enemy.position, enemyRadius)) {
                 WaitTime(0.1f);
-                gameOver = true;
-            } // Get it so the player can move away from the obstacle but not through it, and same with the enemy
+                //gameOver = true;
+            }
         } else {
             // V3 If game is over, check for restart
             if (IsKeyPressed(KEY_R)) {
@@ -98,6 +98,7 @@ int main() {
                 gameOver = false;
             }
         }
+
 
         // V1 Drawing code, draws the player and enemy as circles, and some text to explain the game.
         BeginDrawing();
@@ -109,22 +110,27 @@ int main() {
                 DrawCircleV(enemy.position, enemyRadius, RED);
                 // V1 Draw Player
                 DrawCircleV(playerPos, playerRadius, BLUE);
+                
+              //Draw the Weapon
+                //Rotate the weapon to point towards the mouse
+                Vector2 directionToMouse = Vector2Subtract(mousePos, playerPos);
+                float angleToMouse = atan2f(directionToMouse.y, directionToMouse.x) * RAD2DEG;
+                Rectangle weaponRect = {playerPos.x, playerPos.y, 80.0f, 8.0f};
+                //Draw and center the weapon on the player
+                Vector2 weaponOrigin = {0.0f, 4.0f};
+                DrawRectanglePro(weaponRect, weaponOrigin, angleToMouse, GRAY);
 
-                //Draw Obstacles
-                DrawRectangle(200, 150, 100, 300, GRAY);
-                
-                bool hitObstacle = false;
-                    if (CheckCollisionCircleRec(playerPos, playerRadius, (Rectangle){ 200, 150, 100, 300 })) 
-                    {
-                        hitObstacle = true;
-                        playerSpeed = 0.0f;
-                    }
-                    if (!hitObstacle)
-                    {
-                        playerSpeed = 250.0f;
-                    }
-                
-                //CheckCollisionCircleRec(playerPos, playerRadius, (Rectangle){ 200, 150, 100, 300 });
+                if(CheckCollisionCircleRec(enemy.position, enemyRadius, (Rectangle) weaponRect))
+                {
+                   // DrawText("Enemy Hit!", 10, 80, 20, DARKGREEN);
+                   int i = 10;
+                   while (i != 0)
+                   {
+                    playerSpeed = 0.0f;
+                    i--;
+                   }
+                   
+                }
 
                 DrawText("The Red circle is chasing you!", 10, 10, 20, DARKGRAY);
                 DrawText("Use WASD to move", 10, 40, 20, LIGHTGRAY);
