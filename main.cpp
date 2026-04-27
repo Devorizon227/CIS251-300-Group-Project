@@ -115,22 +115,20 @@ int main() {
                 //Rotate the weapon to point towards the mouse
                 Vector2 directionToMouse = Vector2Subtract(mousePos, playerPos);
                 float angleToMouse = atan2f(directionToMouse.y, directionToMouse.x) * RAD2DEG;
-                Rectangle weaponRect = {playerPos.x, playerPos.y, 80.0f, 8.0f};
+                Rectangle weapon = {playerPos.x, playerPos.y, 80.0f, 8.0f};
                 //Draw and center the weapon on the player
                 Vector2 weaponOrigin = {0.0f, 4.0f};
-                DrawRectanglePro(weaponRect, weaponOrigin, angleToMouse, GRAY);
-
-                if(CheckCollisionCircleRec(enemy.position, enemyRadius, (Rectangle) weaponRect))
+                DrawRectanglePro(weapon, weaponOrigin, angleToMouse, GRAY);
+                Vector2 weaponDirection = Vector2Normalize(directionToMouse);
+                Vector2 weaponEnd = Vector2Add(playerPos, Vector2Scale(weaponDirection, 80.0f));
+                if (CheckCollisionCircleLine(enemy.position, enemyRadius, playerPos, weaponEnd))
                 {
-                   // DrawText("Enemy Hit!", 10, 80, 20, DARKGREEN);
-                   int i = 10;
-                   while (i != 0)
-                   {
-                    playerSpeed = 0.0f;
-                    i--;
-                   }
-                   
+                    // Mainly just for testing purposes but it can stay if its interesting enough
+                    DrawText("HIT!", 10, 80, 20, DARKGREEN);
+                    
+
                 }
+                
 
                 DrawText("The Red circle is chasing you!", 10, 10, 20, DARKGRAY);
                 DrawText("Use WASD to move", 10, 40, 20, LIGHTGRAY);
